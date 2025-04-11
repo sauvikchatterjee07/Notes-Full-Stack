@@ -1,0 +1,36 @@
+# Node modules
+node_modules/
+
+# Environment files
+.env
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Dependency lock files (optional: include if you don’t want to track lock file)
+# package-lock.json
+# yarn.lock
+
+# Coverage reports
+coverage/
+
+# Build output
+dist/
+build/
+
+# Temporary files
+*.tmp
+*.swp
+
+# IDE-specific folders
+.vscode/
+.idea/
+
+# Debugging tools
+.nyc_output/
