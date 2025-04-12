@@ -10,11 +10,14 @@ app.use(express.json());
 
 app.use(cors());
 
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 5007;
 
 connectToDB();
+const Auth_routes=require('./routes/Authroutes')
+
 
 app.use("/api", taskRoutes);
+app.use("/auth",Auth_routes);
 
 app.listen(PORT, () => {
     console.log(`App started on ${PORT}`);
