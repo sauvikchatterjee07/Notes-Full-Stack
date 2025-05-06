@@ -1,4 +1,4 @@
-name: Deploy to EC2
+name: Deploy Notes Full Stack App
 
 on:
     push:
@@ -13,31 +13,28 @@ jobs:
             - name: Checkout code
               uses: actions/checkout@v3
 
-            - name: Setup SSH key and agent
-              run: |
-                  echo "${{ secrets.EC2_KEY }}" > key.pem
-                  chmod 600 key.pem
-                  eval $(ssh-agent -s)
-                  ssh-add key.pem
+            - name: SSH and Deploy to EC2
+              uses: appleboy/ssh-action@v0.1.10
+              with:
+                  host: ${{ secrets.EC2_HOST }}
+                  username: ${{ secrets.EC2_USERNAME }}
+                  key: ${{ secrets.EC2_KEY }}
+                  script: |
+                      # Navigate to the project directory
+                      cd ~/Notes-Full-Stack
 
-            - name: Deploy to EC2
-              run: |
-                  echo "${{ secrets.EC2_KEY }}" > key.pem
-                  chmod 600 key.pem
-                  ssh -o StrictHostKeyChecking=no -i key.pem ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} << 'EOF'
-                    cd ~/Notes-Full-Stack
+                      # Pull latest changes
+                      git pull origin main
 
-                    # Pull latest changes
-                    git pull origin main
+                      # Backend setup
+                      cd Backend
+                      npm install
+                      pm2 restart notes-backend
 
-                    # Backend
-                    cd Backend
-                    npm install
-                    pm2 restart notes-backend
+                      # Frontend setup
+                      cd ../Frontend/Task-App-Frontend
+                      npm install
+                      npm run build
 
-                    # Frontend
-                    cd ../Frontend/Task-App-Frontend
-                    npm install
-                    npm run build
-                    sudo cp -r dist/* /var/www/html/
-                  EOF
+                      # Deploy frontend build
+                      sudo cp -r dist/* /var/www/html/
