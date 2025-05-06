@@ -12,7 +12,7 @@ const {
     getPendingTasks,
     getTasksDueToday,
     getOverDueTasks,
-} = require("../controllers/taskcontroller");
+} = require("../controllers/taskController");
 
 router.post("/task", createTask); //http://localhost:8000/api/tasks
 router.get("/tasks", getTasks);
