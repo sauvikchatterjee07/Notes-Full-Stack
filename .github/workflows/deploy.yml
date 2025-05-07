@@ -19,6 +19,6 @@ jobs:
         with:
           host: 13.201.74.124
           username: ubuntu
-          password: ${{ secrets.EC2_KEY }}
+          key: ${{ secrets.EC2_KEY }}
           port: 22
           script: whoami
