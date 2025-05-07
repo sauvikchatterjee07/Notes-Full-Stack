@@ -40,7 +40,7 @@ jobs:
             sudo cp -r dist/* /var/www/html/
 
             cd ../../Backend
-            echo "${{ secrets.BACKEND_ENV }}" > .env
+            printf "%s\n" "${{ secrets.BACKEND_ENV }}" > .env
             cat .env
             npm install
             npm install -g pm2
