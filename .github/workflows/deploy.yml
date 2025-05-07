@@ -35,8 +35,10 @@ jobs:
             sudo systemctl enable nginx
             npm run build
             sudo cp -r dist/* /var/www/html/
+
             cd ../../Backend/
             echo "${{ secrets.BACKEND_ENV }}" > .env
             npm install
             npm install -g pm2
-            pm2 start index.js --name notes-backend
+            pm2 stop notes-backend || true
+            pm2 start index.js --name notes-backend -f
