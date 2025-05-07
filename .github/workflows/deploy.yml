@@ -21,4 +21,20 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_KEY }}
           port: 22
-          script: whoami
+          script: |
+            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+            \. "$HOME/.nvm/nvm.sh"
+            nvm install 22.13.1
+            cd Notes-Full-Stack/Frontend/Task-App-Frontend
+            npm install
+            sudo apt update
+            sudo apt install nginx
+            sudo systemctl start nginx
+            sudo systemctl enable nginx
+            npm run build
+            sudo scp -r dist/* /var/www/html/
+            cd ../../
+            cd Backend/
+            npm install
+            npm install -g pm2
+            pm2 start index.js --name notes-backend
