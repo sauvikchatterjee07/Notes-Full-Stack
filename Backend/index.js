@@ -17,5 +17,5 @@ connectToDB();
 app.use("/api", taskRoutes);
 
 app.listen(PORT, () => {
-    console.log(`App started on ${PORT}`);
+  console.log(`App started on ${PORT}`);
 });
