@@ -14,30 +14,34 @@ jobs:
       - name: Checkout the code
         uses: actions/checkout@v2
 
-      - name: Execute remote SSH commands using password
+      - name: Execute remote SSH commands
         uses: appleboy/ssh-action@v1
         with:
           host: 13.201.74.124
           username: ubuntu
           key: ${{ secrets.EC2_KEY }}
           port: 22
+          envs: BACKEND_ENV
           script: |
             rm -rf Notes-Full-Stack
             git clone https://github.com/sauvikchatterjee07/Notes-Full-Stack.git
             curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
-            \. "$HOME/.nvm/nvm.sh"
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             nvm install 22.13.1
+
             cd Notes-Full-Stack/Frontend/Task-App-Frontend
             npm install
+            npm run build
+
             sudo apt update
-            sudo apt install nginx
+            sudo apt install -y nginx
             sudo systemctl start nginx
             sudo systemctl enable nginx
-            npm run build
             sudo cp -r dist/* /var/www/html/
 
-            cd ../../Backend/
-            echo "${{ secrets.BACKEND_ENV }}" > .env
+            cd ../../Backend
+            echo "$BACKEND_ENV" > .env
             npm install
             npm install -g pm2
             pm2 stop notes-backend || true
