@@ -20,5 +20,5 @@ jobs:
           key: ${{ secrets.EC2_KEY}}
           port: 22
           script: |
-          ls
-          whoami
+            ls
+            whoami
