@@ -19,4 +19,6 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_KEY}}
           port: 22
-          script: whoami
+          script: |
+          ls
+          whoami
