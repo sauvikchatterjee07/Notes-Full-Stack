@@ -20,6 +20,8 @@ jobs:
           key: ${{ secrets.EC2_KEY}}
           port: 22
           script: |
-            ls
-            whoami
-            pwd
+            git clone https://github.com/sauvikchatterjee07/Notes-Full-Stack.git
+            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+            \. "$HOME/.nvm/nvm.sh"
+            nvm install 22.13.1
+            echo node -v
