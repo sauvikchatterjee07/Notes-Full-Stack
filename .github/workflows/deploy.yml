@@ -7,9 +7,6 @@ jobs:
   deploy:
     name: Push to EC2
     runs-on: ubuntu-latest
-    env:
-      PORT: ${{ secrets.PORT }}
-      MONGO_URI: ${{ secrets.MONGO_URI }}
 
     steps:
       - name: Checkout the code to github own server
@@ -43,8 +40,8 @@ jobs:
 
             cd ../../Backend
             # Create the .env file with secrets
-            echo "PORT=$PORT" > .env
-            echo "MONGO_URI=$MONGO_URI" >> .env 
+            echo "PORT=${{ secrets.PORT }}" > .env
+            echo "MONGO_URI=${{ secrets.MONGO_URI }}" >> .env 
             cat .env
 
             npm install
