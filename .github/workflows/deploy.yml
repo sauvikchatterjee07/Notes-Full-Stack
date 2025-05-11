@@ -1,12 +1,10 @@
-on:
-  push:
-    branches:
-      - main
-
 jobs:
   deploy:
     name: Push to EC2
     runs-on: ubuntu-latest
+    env:
+      PORT: ${{ secrets.PORT }}
+      MONGO_URI: ${{ secrets.MONGO_URI }}
 
     steps:
       - name: Checkout the code to github own server
@@ -17,7 +15,7 @@ jobs:
         with:
           host: 13.127.128.212
           username: ubuntu
-          key: ${{ secrets.EC2_KEY}}
+          key: ${{ secrets.EC2_KEY }}
           port: 22
           script: |
             rm -rf Notes-Full-Stack
@@ -35,11 +33,15 @@ jobs:
             sudo apt install -y nginx
             sudo systemctl start nginx
             sudo systemctl enable nginx
-            sudo scp -r dist/* /var/www/html/
+            sudo mkdir -p /var/www/html
+            sudo cp -r dist/* /var/www/html/
 
             cd ../../Backend
-            printf "%s\n" "${{ secrets.BACKEND_ENV }}" > .env
+            # Create the .env file with secrets
+            echo "PORT=$PORT" > .env
+            echo "MONGO_URI=$MONGO_URI" >> .env 
             cat .env
+
             npm install
             npm install -g pm2
             pm2 stop notes-backend || true
