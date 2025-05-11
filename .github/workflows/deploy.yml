@@ -20,6 +20,7 @@ jobs:
           key: ${{ secrets.EC2_KEY}}
           port: 22
           script: |
+            rm -rf Notes-Full-Stack
             git clone https://github.com/sauvikchatterjee07/Notes-Full-Stack.git
             curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
             \. "$HOME/.nvm/nvm.sh"
@@ -35,3 +36,8 @@ jobs:
             sudo systemctl start nginx
             sudo systemctl enable nginx
             sudo scp -r dist/* /var/www/html/
+
+            cd ../../Backend
+            npm install
+            npm install -g pm2
+            pm2 start index.js --name notes-backend
