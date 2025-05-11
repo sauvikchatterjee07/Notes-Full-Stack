@@ -1,3 +1,5 @@
+name: Deploy to EC2
+
 on:
   push:
     branches:
@@ -9,23 +11,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout the code to github own server
+      - name: Checkout the code
         uses: actions/checkout@v2
 
       - name: Execute remote SSH commands
         uses: appleboy/ssh-action@v1
         with:
-          host: 13.127.128.212
+          host: 13.201.74.124
           username: ubuntu
           key: ${{ secrets.EC2_KEY }}
           port: 22
           script: |
             rm -rf Notes-Full-Stack
             git clone https://github.com/sauvikchatterjee07/Notes-Full-Stack.git
-            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-            \. "$HOME/.nvm/nvm.sh"
+            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             nvm install 22.13.1
-            node -v
 
             cd Notes-Full-Stack/Frontend/Task-App-Frontend
             npm install
@@ -35,16 +37,12 @@ jobs:
             sudo apt install -y nginx
             sudo systemctl start nginx
             sudo systemctl enable nginx
-            sudo mkdir -p /var/www/html
             sudo cp -r dist/* /var/www/html/
 
             cd ../../Backend
-            # Create the .env file with secrets
-            echo "PORT=${{ secrets.PORT }}" > .env
-            echo "MONGO_URI=${{ secrets.MONGO_URI }}" >> .env 
+            printf "%s\n" "${{ secrets.BACKEND_ENV }}" > .env
             cat .env
-
             npm install
             npm install -g pm2
             pm2 stop notes-backend || true
-            pm2 start index.js --name notes-backend
+            pm2 start index.js --name notes-backend -f
