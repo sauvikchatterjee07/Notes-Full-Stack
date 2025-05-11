@@ -7,6 +7,7 @@ jobs:
   deploy:
     name: Push to EC2
     runs-on: ubuntu-latest
+    BACKEND_ENV: ${{ secrets.BACKEND_ENV }}
 
     steps:
       - name: Checkout the code to github own server
@@ -38,7 +39,7 @@ jobs:
             sudo scp -r dist/* /var/www/html/
 
             cd ../../Backend
-            printf "%s\n" "${{secrets.BACKEND_ENV}}" > .env
+            echo "$BACKEND_ENV" > .env
             cat .env
             npm install
             npm install -g pm2
