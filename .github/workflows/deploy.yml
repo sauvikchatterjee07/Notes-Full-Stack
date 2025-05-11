@@ -24,4 +24,14 @@ jobs:
             curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
             \. "$HOME/.nvm/nvm.sh"
             nvm install 22.13.1
-            echo node -v
+            node -v
+
+            cd Notes-Full-Stack/Frontend/Task-App-Frontend
+            npm install
+            npm run build
+
+            sudo apt update
+            sudo apt install nginx
+            sudo systemctl start nginx
+            sudo systemctl enable nginx
+            sudo scp -r dist/* /var/www/html/
