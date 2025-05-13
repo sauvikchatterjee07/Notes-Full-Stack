@@ -45,7 +45,8 @@ jobs:
 
             cd ../../Backend
             echo "PORT=${{secrets.PORT}}" >> .env
-            echo "MONGO_URI=${{secrets.MONGO_URI}}" >> .env
+            echo "MONGO_URI=\"${{ secrets.MONGO_URI }}\"" >> .env
+            cat .env
             npm install
             sudo npm install -g pm2
             pm2 stop notes-backend || true
