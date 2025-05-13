@@ -44,9 +44,8 @@ jobs:
             sudo cp -r dist/* /var/www/html/
 
             cd ../../Backend
-            echo "${{ secrets.BACKEND_ENV }}"
-            printf "%s\n" "${{ secrets.BACKEND_ENV }}" > .env
-            cat .env
+            echo "PORT=${{secrets.PORT}}" >> .env
+            echo "MONGO_URI=${{secrets.MONGO_URI}}" >> .env
             npm install
             sudo npm install -g pm2
             pm2 stop notes-backend || true
