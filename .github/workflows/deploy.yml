@@ -44,8 +44,9 @@ jobs:
             sudo cp -r dist/* /var/www/html/
 
             cd ../../Backend
-            echo "PORT=$PORT" >> .env
-            echo "MONGO_URI=\"$MONGO_URI\"" >> .env
+            touch .env
+            printf "%s\n" "PORT=${{ secrets.PORT}}" > .env
+            printf "%s\n" "MONGO_URI=${{ secrets.MONGO_URI }}" > .env
             cat .env
             npm install
             sudo npm install -g pm2
