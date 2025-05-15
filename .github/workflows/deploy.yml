@@ -12,7 +12,7 @@ jobs:
       MONGO_URI: ${{ secrets.MONGO_URI }}
 
     steps:
-      - name: Checkout the code to github own server
+      - name: Checkout the code to GitHub's runner
         uses: actions/checkout@v2
 
       - name: Execute remote SSH commands
@@ -23,7 +23,10 @@ jobs:
           key: ${{ secrets.EC2_KEY }}
           port: 22
           script: |
+            # Clean previous deployment if any
             rm -rf Notes-Full-Stack
+
+            # Clone the latest code
             git clone https://github.com/sauvikchatterjee07/Notes-Full-Stack.git
 
             # Install Node.js and npm
@@ -32,10 +35,12 @@ jobs:
             node -v
             npm -v
 
+            # Build the frontend
             cd Notes-Full-Stack/Frontend/Task-App-Frontend
             npm install
             npm run build
 
+            # Setup and start nginx
             sudo apt update
             sudo apt install -y nginx
             sudo systemctl start nginx
@@ -43,11 +48,19 @@ jobs:
             sudo mkdir -p /var/www/html
             sudo cp -r dist/* /var/www/html/
 
+            # Setup the backend
             cd ../../Backend
-            touch .env
-            printf "%s\n" "PORT=${{ secrets.PORT}}" > .env
-            printf "%s\n" "MONGO_URI=${{ secrets.MONGO_URI }}" > .env
+
+            # Create .env file with secrets (no indentation!)
+            cat <<EOF > .env
+PORT=${{ secrets.PORT }}
+MONGO_URI=${{ secrets.MONGO_URI }}
+EOF
+
+            # Print the .env file for debugging (optional)
             cat .env
+
+            # Install dependencies and start backend
             npm install
             sudo npm install -g pm2
             pm2 stop notes-backend || true
