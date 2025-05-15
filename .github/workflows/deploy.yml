@@ -18,7 +18,7 @@ jobs:
       - name: Execute remote SSH commands
         uses: appleboy/ssh-action@v1
         with:
-          host: 13.200.243.1
+          host: 65.0.108.59
           username: ubuntu
           key: ${{ secrets.EC2_KEY }}
           port: 22
@@ -44,10 +44,8 @@ jobs:
             sudo cp -r dist/* /var/www/html/
 
             cd ../../Backend
-            cat <<EOF > .env
-            PORT=${{ secrets.PORT }}
-            MONGO_URI=${{ secrets.MONGO_URI }}
-            EOF
+            echo "PORT=$PORT" >> .env
+            echo "MONGO_URI=\"$MONGO_URI\"" >> .env
             cat .env
             npm install
             sudo npm install -g pm2
