@@ -45,7 +45,7 @@ jobs:
 
             cd ../../Backend
             touch .env
-            echo "PORT=5000" > .env
+            echo "PORT=${{ secrets.PORT }}" > .env
             printf "%s\n" "MONGO_URI=${{ secrets.MONGO_URI }}" >> .env
             cat .env
             npm install
