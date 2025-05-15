@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // const BASE_URL = "http://localhost:5000/api";
-const BASE_URL = "http://13.200.243.1:5000/api";
+const BASE_URL = "http://65.0.108.59:5001/api";
 
 export const getAllTasks = () => axios.get(`${BASE_URL}/tasks`);
 export const getTaskbyId = (id) => axios.get(`${BASE_URL}/tasks/${id}`);

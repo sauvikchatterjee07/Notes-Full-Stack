@@ -45,7 +45,7 @@ jobs:
 
             cd ../../Backend
             touch .env
-            printf "%s\n" "${{ secrets.BACKEND_ENV }}" > .env
+            printf "%s\n" "MONGO_URI=${{ secrets.MONGO_URI }}" > .env
             cat .env
             npm install
             sudo npm install -g pm2
