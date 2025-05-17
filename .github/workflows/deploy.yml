@@ -18,7 +18,7 @@ jobs:
       - name: Execute remote SSH commands
         uses: appleboy/ssh-action@v1
         with:
-          host: 65.0.108.59
+          host: 13.203.192.233
           username: ubuntu
           key: ${{ secrets.EC2_KEY }}
           port: 22
@@ -29,8 +29,6 @@ jobs:
             # Install Node.js and npm
             curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
             sudo apt-get install -y nodejs
-            node -v
-            npm -v
 
             cd Notes-Full-Stack/Frontend/Task-App-Frontend
             npm install
