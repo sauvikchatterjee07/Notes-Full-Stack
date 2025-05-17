@@ -10,7 +10,7 @@ const App = () => {
   };
 
   return (
-    <div className="bg-amber-200">
+    <div className="bg-gray-50">
       <div>
         <header className="mb-10 text-center">
           <h1 className="text-4xl font-semibold tracking-tight text-gray-800 mb-2">
