@@ -16,6 +16,12 @@ connectToDB();
 
 app.use("/api", taskRoutes);
 
+app.get("/", (req, res) => {
+  res.json({
+    message: "welcome boss!",
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`App started on ${PORT}`);
 });

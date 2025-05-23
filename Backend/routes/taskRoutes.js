@@ -2,16 +2,16 @@ const express = require("express");
 const router = express.Router();
 
 const {
-    createTask,
-    getTasks,
-    getTaskById,
-    updateTask,
-    deleteTask,
-    getTasksByPriority,
-    getCompletedTasks,
-    getPendingTasks,
-    getTasksDueToday,
-    getOverDueTasks,
+  createTask,
+  getTasks,
+  getTaskById,
+  updateTask,
+  deleteTask,
+  getTasksByPriority,
+  getCompletedTasks,
+  getPendingTasks,
+  getTasksDueToday,
+  getOverDueTasks,
 } = require("../controllers/taskController");
 
 router.post("/task", createTask); //http://localhost:8000/api/tasks
