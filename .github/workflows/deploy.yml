@@ -1,3 +1,5 @@
+name: CI/CD Pipeline to EC2
+
 on:
   push:
     branches:
@@ -5,48 +7,56 @@ on:
 
 jobs:
   deploy:
-    name: Push to EC2
     runs-on: ubuntu-latest
-    env:
-      PORT: ${{ secrets.PORT }}
-      MONGO_URI: ${{ secrets.MONGO_URI }}
 
     steps:
-      - name: Checkout the code to github own server
+      - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Execute remote SSH commands
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push backend image
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/task-backend:latest ./Backend
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/task-backend:latest
+
+      - name: Build and push frontend image
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/task-frontend:latest ./Frontend/Task-App-Frontend
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/task-frontend:latest
+
+      - name: SSH into EC2 and deploy using Docker Compose
         uses: appleboy/ssh-action@v1
         with:
-          host: 13.203.231.112
+          host: 3.111.57.161
           username: ubuntu
           key: ${{ secrets.EC2_KEY }}
           port: 22
           script: |
-            rm -rf Notes-Full-Stack
+            # Update docker and docker-compose if not installed
+            sudo apt update
+            sudo apt install -y docker.io docker-compose
+
+            # Ensure user has docker permissions
+            sudo usermod -aG docker ubuntu
+
+            # Pull latest code
+            rm -rf Notes-Full-Stack || true
             git clone https://github.com/sauvikchatterjee07/Notes-Full-Stack.git
 
-            # Install Node.js and npm
-            curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
-            sudo apt-get install -y nodejs
+            cd Notes-Full-Stack
 
-            cd Notes-Full-Stack/Frontend/Task-App-Frontend
-            npm install
-            npm run build
+            # Pull latest images from Docker Hub
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/task-backend:latest
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/task-frontend:latest
 
-            sudo apt update
-            sudo apt install -y nginx
-            sudo systemctl start nginx
-            sudo systemctl enable nginx
-            sudo mkdir -p /var/www/html
-            sudo cp -r dist/* /var/www/html/
-
-            cd ../../Backend
-            touch .env
-            echo "PORT=${{ secrets.PORT }}" > .env
-            printf "%s\n" "MONGO_URI=${{ secrets.MONGO_URI }}" >> .env
-            cat .env
-            npm install
-            sudo npm install -g pm2
-            pm2 stop notes-backend || true
-            pm2 start index.js --name notes-backend -f
+            # Use existing docker-compose.yml from repo
+            docker compose down
+            docker compose up -d
