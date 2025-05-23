@@ -14,7 +14,7 @@ const {
   getOverDueTasks,
 } = require("../controllers/taskController");
 
-router.post("/task", createTask); //http://localhost:8000/api/tasks
+router.post("/task", createTask);
 router.get("/tasks", getTasks);
 router.get("/tasks/:id", getTaskById);
 router.put("/tasks/:id", updateTask);

@@ -2,7 +2,7 @@ import axios from "axios";
 
 // const BASE_URL = "http://localhost:5001/api";
 
-const BASE_URL = "http://13.203.231.112/api";
+const BASE_URL = "http://13.203.231.112:5000/api";
 
 // const BASE_URL = "http://3.109.158.79/v1/api";
 
