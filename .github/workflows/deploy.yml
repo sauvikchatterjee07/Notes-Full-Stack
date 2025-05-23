@@ -35,7 +35,7 @@ jobs:
       - name: SSH into EC2 and deploy using Docker Compose
         uses: appleboy/ssh-action@v1
         with:
-          host: 3.111.57.161
+          host: 13.203.231.112
           username: ubuntu
           key: ${{ secrets.EC2_KEY }}
           port: 22
